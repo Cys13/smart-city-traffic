@@ -1,0 +1,4 @@
+2026-11-27 23:17:59 | DEBUG    | logging_setup          | Logging configured: level=DEBUG, file=C:\Users\YikSun\Desktop\A33\part2\capstone_part2\logs\pipeline_debug.log
+2026-11-27 23:17:59 | INFO     | __main__               | Command invoked: compare | arguments: {'data': 'path/to/traffic_features.csv'}
+2026-11-27 23:17:59 | INFO     | __main__               | Loading dataset from path\to\traffic_features.csv
+2026-11-27 23:17:59 | ERROR    | __main__               | Command 'compare' failed: Dataset not found: path\to\traffic_features.csv. Run 'python run_all.py' (or pipeline.py then feature_engineering.py) first.

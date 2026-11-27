@@ -1,0 +1,10 @@
+# Core data stack used by pipeline.py, feature_engineering.py and visualizations.py
+pandas>=2.1
+numpy>=1.26
+
+# Plotting (visualizations.py)
+matplotlib>=3.8
+
+# Report generation (report.docx)
+python-docx>=1.1
+

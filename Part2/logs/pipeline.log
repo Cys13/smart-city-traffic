@@ -1,0 +1,53 @@
+2026-11-28 00:01:35 | INFO     | __main__               | === Smart-city traffic pipeline: full run started (debug=False) ===
+2026-11-28 00:01:35 | INFO     | __main__               | Log file for this run: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\logs\pipeline.log
+2026-11-28 00:01:35 | INFO     | pipeline               | Loading raw data from C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\data\raw\metro_interstate_traffic_volume.csv
+2026-11-28 00:01:35 | INFO     | pipeline               | Loaded raw data: 48204 rows x 9 columns
+2026-11-28 00:01:35 | INFO     | pipeline               | Schema validation passed: all 9 required columns present (holiday, temp, rain_1h, snow_1h, clouds_all, weather_main, weather_description, date_time, traffic_volume)
+2026-11-28 00:01:35 | INFO     | pipeline               | Standardised weather_main: no rows needed re-spelling
+2026-11-28 00:01:35 | WARNING  | pipeline               | Standardised weather_description: 1730 row(s) re-spelled to lower case (e.g. 'Sky is Clear' -> 'sky is clear', 'SQUALLS' -> 'squall')
+2026-11-28 00:01:35 | INFO     | pipeline               | Standardised holiday: 48143 row(s) marked 'No Holiday' (not a holiday), 61 row(s) on a named holiday (11 distinct)
+2026-11-28 00:01:35 | INFO     | pipeline               | Parsed date_time: 48204 valid timestamp(s), range 2012-10-02 09:00:00 to 2018-09-30 23:00:00
+2026-11-28 00:01:36 | WARNING  | pipeline               | Removed 17 exact duplicate row(s) (every column identical, keeping the first)
+2026-11-28 00:01:36 | WARNING  | pipeline               | Removed 7612 duplicate row(s) sharing an hourly timestamp across 5430 hour(s) (kept the first weather observation; traffic and temperature were identical)
+2026-11-28 00:01:36 | INFO     | pipeline               | Duplicate handling complete: 40575 row(s) remaining
+2026-11-28 00:01:36 | INFO     | pipeline               | Checking missing values: {'temp': 0, 'rain_1h': 0, 'snow_1h': 0, 'clouds_all': 0, 'traffic_volume': 0}
+2026-11-28 00:01:36 | INFO     | pipeline               | Missing values in 'temp': none
+2026-11-28 00:01:36 | INFO     | pipeline               | Missing values in 'rain_1h': none
+2026-11-28 00:01:36 | INFO     | pipeline               | Missing values in 'snow_1h': none
+2026-11-28 00:01:36 | INFO     | pipeline               | Missing values in 'clouds_all': none
+2026-11-28 00:01:36 | INFO     | pipeline               | Missing values in 'traffic_volume': none
+2026-11-28 00:01:36 | WARNING  | pipeline               | Detected 10 impossible 'temp' value(s) outside the plausible range [200.0, 333.0] - replacing with the monthly median
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 4 temp value(s) in month 01 with the month 01 median (265.48) - reason: value outside plausible range [200.0, 333.0]
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 6 temp value(s) in month 02 with the month 02 median (265.89) - reason: value outside plausible range [200.0, 333.0]
+2026-11-28 00:01:36 | WARNING  | pipeline               | Detected 1 impossible 'rain_1h' value(s) outside the plausible range [0.0, 200.0] - replacing with the monthly median
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 1 rain_1h value(s) in month 07 with the month 07 median (0.00) - reason: value outside plausible range [0.0, 200.0]
+2026-11-28 00:01:36 | INFO     | pipeline               | Impossible-value check for 'snow_1h': none outside [0.0, 100.0]
+2026-11-28 00:01:36 | INFO     | pipeline               | Impossible-value check for 'clouds_all': none outside [0.0, 100.0]
+2026-11-28 00:01:36 | WARNING  | pipeline               | Detected 33 impossible 'traffic_volume' value(s) outside the plausible range [10.0, 10000.0] - replacing with the monthly median
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 25 traffic_volume value(s) in month 07 with the month 07 median (3347.00) - reason: value outside plausible range [10.0, 10000.0]
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 1 traffic_volume value(s) in month 08 with the month 08 median (3726.00) - reason: value outside plausible range [10.0, 10000.0]
+2026-11-28 00:01:36 | WARNING  | pipeline               | Imputed 7 traffic_volume value(s) in month 09 with the month 09 median (3539.00) - reason: value outside plausible range [10.0, 10000.0]
+2026-11-28 00:01:36 | INFO     | pipeline               | Saved cleaned data: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\data\processed\traffic_clean.csv (40575 rows x 9 columns)
+2026-11-28 00:01:36 | INFO     | pipeline               | Cleaning summary: 48204 row(s) loaded, 40575 row(s) kept, 7629 row(s) dropped in total (15.83%)
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Loading cleaned data from C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\data\processed\traffic_clean.csv
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Shape before feature engineering: 40575 rows x 9 columns
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Time features added: hour, day_of_week, day_name, month, is_weekend, hour_sin/cos, day_of_week_sin/cos
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Weather features added: temp_c, is_raining, is_snowing, is_adverse_weather, is_holiday, 11 weather_main dummies, 8 grouped weather_description dummies
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Scaled features added: temp_c_minmax (-29.8..36.9 C), traffic_volume_minmax (10..7280 veh/h), rain_1h_log_minmax (log1p of 0..55.63 mm)
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Congestion categories created from quartiles Q1=1256, Q2=3429, Q3=4952 veh/h: Low=10145, Moderate=10145, High=10143, Severe=10142
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Shape after feature engineering: 40575 rows x 47 columns
+2026-11-28 00:01:36 | INFO     | feature_engineering    | Saved engineered features to C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\data\processed\traffic_features.csv (40575 rows x 47 columns)
+2026-11-28 00:01:36 | INFO     | visualizations         | Loading features for plotting from C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\data\processed\traffic_features.csv
+2026-11-28 00:01:36 | INFO     | visualizations         | Plotting 40575 rows x 47 columns
+2026-11-28 00:01:36 | INFO     | visualizations         | Figure 1 data: weekday peak 16:00 at 6241 veh/h, weekday trough 02:00 at 309 veh/h; weekend peak 12:00 at 4410 veh/h
+2026-11-28 00:01:36 | INFO     | visualizations         | Saved figure: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures\fig1_traffic_by_hour.png
+2026-11-28 00:01:36 | INFO     | visualizations         | Figure 2 data: weekday mean 3558 veh/h vs weekend mean 2631 veh/h (26.1% lower), busiest day Friday (3675), quietest day Sunday (2429)
+2026-11-28 00:01:36 | INFO     | visualizations         | Saved figure: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures\fig2_weekday_vs_weekend.png
+2026-11-28 00:01:36 | INFO     | visualizations         | Figure 3 data: highest mean under 'Clouds' (3619 veh/h, 15123 h), lowest under 'Fog' (2724 veh/h, 201 h); excluded as too rare: Squall (1 h), Smoke (15 h)
+2026-11-28 00:01:36 | INFO     | visualizations         | Saved figure: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures\fig3_traffic_by_weather.png
+2026-11-28 00:01:36 | INFO     | visualizations         | Figure 4 data: r(temp_c, traffic_volume) = 0.141, 6000 points sampled; hottest 5 C bin mean 5074 veh/h
+2026-11-28 00:01:37 | INFO     | visualizations         | Saved figure: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures\fig4_temperature_vs_traffic.png
+2026-11-28 00:01:37 | INFO     | visualizations         | Figure 5 data: min 10, Q1 1256, median 3429, Q3 4952, max 7280 veh/h; mean 3293
+2026-11-28 00:01:37 | INFO     | visualizations         | Saved figure: C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures\fig5_traffic_distribution.png
+2026-11-28 00:01:37 | INFO     | visualizations         | 5 figure(s) written to C:\Users\YikSun\Desktop\A33\smart-city-traffic-capstone\Part2\figures
+2026-11-28 00:01:37 | INFO     | __main__               | === Full run finished successfully: data/processed/ and figures/ are up to date ===
