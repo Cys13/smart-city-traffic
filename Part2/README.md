@@ -8,7 +8,7 @@ cleaning it, engineering features, plotting the patterns and querying the result
 * Cleaned data: 40,575 hourly rows (one row per hour)
 * Engineered features: 40,575 rows x 47 columns
 * Figures: 5 PNG files in `figures/`
-* Report: `REPORT.md` and `report.docx`
+* Report: 'report.docx`
 
 ---
 
