@@ -5,10 +5,10 @@ This part of the capstone covers the Python data pipeline: loading and validatin
 cleaning it, engineering features, plotting the patterns and querying the result from a small CLI.
 
 * Raw data: 48,204 rows x 9 columns
-* Cleaned data: 40,575 hourly rows (one row per hour)
+* Cleaned data: 40,575 hourly rows (one row per hour) 
 * Engineered features: 40,575 rows x 47 columns
 * Figures: 5 PNG files in `figures/`
-* Report: 'report.docx`
+* Report: `REPORT.md` and `report.docx`
 
 ---
 
