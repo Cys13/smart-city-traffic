@@ -103,27 +103,10 @@ without a traceback.
 
 ---
 
-## 4. What the data inspection found
-
-The raw export is the *Metro Interstate Traffic Volume* dataset, but nothing was assumed: the file
-was profiled first and every rule below comes from what it actually contains.
-
-| Check | Finding | How it is handled |
-|---|---|---|
-| Columns / types | 9 columns: `holiday`, `temp`, `rain_1h`, `snow_1h`, `clouds_all`, `weather_main`, `weather_description`, `date_time`, `traffic_volume`. `holiday` and the two weather columns are text, `temp`/`rain_1h`/`snow_1h` float, `clouds_all`/`traffic_volume` integer | Expected schema declared in `REQUIRED_COLUMNS`; validated before anything else |
-| Encoding | UTF-8 with a BOM | read with `encoding="utf-8-sig"` |
-| Missing values | Only `holiday`: 48,143 rows hold the literal string `None`; no numeric gaps at all | `None` means "not a holiday", renamed to `No Holiday` (pandas would otherwise read it as NaN on the next load) |
-| Duplicate rows | 17 fully identical rows, plus 7,612 rows sharing an hourly timestamp with another row (5,430 hours have 2-6 rows) | exact duplicates dropped first, then one row per hour kept; the duplicates carry identical traffic and temperature, only the weather observation differs |
-| Repeated sensor hours | After de-duplication the series has 40,575 unique hours out of 52,551 hours between the first and last timestamp | the 11,976 missing hours are left as gaps (they are absent observations, not zeros) |
-| Category spellings | `weather_description`: `Sky is Clear` (1,726 rows) and `sky is clear`; `SQUALLS` (4 rows) and `squall` | lower-cased, trimmed, whitespace collapsed, variant mapping applied: 1,730 rows changed |
-| Other categories | `weather_main` (11 labels) and `holiday` (11 distinct holidays) already consistent | canonical mapping applied defensively |
-| Dates | all 48,204 timestamps parse, format `YYYY-MM-DD HH:MM:SS`, range 2012-10-02 09:00 to 2018-09-30 23:00 | parsed with `errors="coerce"`; unparseable rows would be dropped and counted |
-| Impossible values | 10 rows at exactly 0.00 K (-273 C, Jan/Feb 2014); 1 row with 9,831.3 mm of rain in one hour; 33 rows with 0-9 vehicles/hour (whole hours of 2016-07-23 among them) | replaced with the **monthly median** |
-| Range after cleaning | temp -29.8 to 36.9 C, rain 0 to 55.63 mm, traffic 10 to 7,280 veh/h | consistent with a Minnesota interstate |
 
 ---
 
-## 5. Cleaning rules (pipeline.py) and their counts
+## 4. Cleaning rules (pipeline.py) and their counts
 
 | Step | Rule | Rows affected |
 |---|---|---|
@@ -155,7 +138,7 @@ not comparable to a July one). Actual values used in this run:
 
 ---
 
-## 6. Feature engineering (feature_engineering.py)
+## 5. Feature engineering (feature_engineering.py)
 
 | Group | Columns |
 |---|---|
@@ -185,7 +168,7 @@ not hard-coded, so the labels stay balanced if the input file changes.
 
 ---
 
-## 7. Figures and what they show
+## 6. Figures and what they show
 
 ### Figure 1 - `fig1_traffic_by_hour.png` (mean traffic by hour, weekday vs weekend)
 
@@ -227,23 +210,8 @@ between 2,500 and 6,000 veh/h (daytime). Mean 3,293, median 3,429, Q1 1,256, Q3 
 
 ---
 
-## 8. Key findings
 
-1. **Time of day dominates.** Weekday demand swings from 309 veh/h at 02:00 to 6,241 veh/h at 16:00,
-   a factor of 20. Weather categories differ by at most ~30%.
-2. **The weekend is structurally different, not just quieter.** Weekday hours average 3,558 veh/h
-   and weekend hours 2,631 (-26.1%); 33.8% of weekday hours are "Severe" against 3.1% at weekends.
-   The weekday curves peak twice (07:00 and 16:00), the weekend curve once (12:00).
-3. **Holidays are the quietest days of the year.** 53 holiday hours average 864 veh/h, 74% below the
-   3,297 veh/h of normal hours.
-4. **Rain barely changes volume** (3,334 veh/h in rainy hours vs 3,293 overall, 5.1% of hours are
-   rainy), while snow and fog coincide with the lowest averages (2,900 and 2,724 veh/h).
-5. **The dataset is incomplete but usable.** 11,976 of the 52,551 hours in the period are missing,
-   and one whole day (2016-07-23) had a traffic sensor dropout that reported 0-8 veh/h.
-
----
-
-## 9. Logging configuration
+## 8. Logging configuration
 
 * `logging_setup.py` holds a single `configure_logging(debug)` function. It is called **only** from
   the `main()` of an entry-point script (`run_all.py`, `pipeline.py`, `feature_engineering.py`,
@@ -265,20 +233,4 @@ between 2,500 and 6,000 veh/h (daytime). Mean 3,293, median 3,429, Q1 1,256, Q3 
 * No `print()` is used for status anywhere; `traffic_app.py` uses `print()` only for the answer.
 
 ---
-
-## 10. Assumptions and limitations
-
-* The raw file was taken as the authoritative source; its `holiday = None` string was interpreted as
-  "no holiday", not as missing data.
-* Duplicate timestamps were resolved by keeping the first weather observation. Traffic and
-  temperature are identical inside each duplicated hour, so no measurement is lost, but the choice of
-  weather label is arbitrary for those 5,430 hours.
-* "Plausible ranges" are engineering choices, documented in `pipeline.py`; a different lower bound
-  for `traffic_volume` (for example 1 instead of 10) would keep the 33 sensor-dropout hours instead
-  of imputing them.
-* Missing hours are not interpolated: the CLI and the figures use only observed hours.
-* The congestion bands are relative to this dataset, not to a traffic-engineering level-of-service
-  standard.
-* Part 1 findings were not available while writing this, so the interpretation is based only on this
-  dataset; align the wording with Part 1 before submitting.
 
